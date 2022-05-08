@@ -16,25 +16,33 @@ const bcrypt = require("bcrypt");
 const addUser = async (req: Request, res: Response) => {
   const user: User = req.body;
   try {
-    if (user) {
-      const salt = await bcrypt.genSalt(10);
-      const hashPasword = await bcrypt.hash(user?.password, salt);
-      user.password = hashPasword;
-
-      const userCollection = db.collection("users").doc(); // connect to/create user collection in reference firestore
-      userCollection.set(user); //add user object to document
-
-      res.status(200).send({
-        status: "success",
-        message: "user was added successfully.",
-        data: user,
+    if (await getUserByEmail(user.email)) {
+      //Check if email already exist
+      res.status(409).send({
+        status: "Data Conflict",
+        message: "Email already exist",
       });
     } else {
-      res.status(500).send({
-        status: "failed",
-        message: "Please enter all fields",
-      });
-    }
+      if (user) {
+        const salt = await bcrypt.genSalt(10);
+        const hashPasword = await bcrypt.hash(user?.password, salt);
+        user.password = hashPasword;
+
+        const userCollection = db.collection("users").doc(); // connect to/create user collection in reference firestore
+        userCollection.set(user); //add user object to document
+
+        res.status(200).send({
+          status: "success",
+          message: "user was added successfully.",
+          data: user,
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: "Please enter all fields",
+        });
+      }
+    } // end duplicate email if check
   } catch (error) {
     res.status(500).send({
       status: "failed",
