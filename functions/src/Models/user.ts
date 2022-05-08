@@ -1,12 +1,14 @@
 class User {
-  username!: string;
-  password!: string;
-  email!: string;
-  emailVerified!: false;
+  id? = "";
+  username? = "";
+  password? = "";
+  email? = "";
+  emailVerified? = false;
 }
 
 type Request = {
   body: User;
   params: { userId: string };
 };
+
 export { User, Request };
