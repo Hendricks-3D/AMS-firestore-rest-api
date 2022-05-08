@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { auth, db } from "../configuration/firebase";
+import { getUserByEmail } from "../functions/userMethods";
 import { Request, User } from "../Models/user";
 const bcrypt = require("bcrypt");
 
@@ -80,17 +81,23 @@ const createAuthUser = async (req: Request, res: Response) => {
 };
 
 const loginUser = async (req: Request, res: Response) => {
-  const user: User[] = [];
+  let user: User[] = [];
   try {
-    const querySnapshot = await db
-      .collection("users")
-      .where("email", "==", req.body.email)
-      .get(); // connect to/create user collection in reference firestore
-    querySnapshot.forEach((doc: any) => {
-      user.push(doc.data());
-    });
-
-    res.status(200).json(user);
+    user = await getUserByEmail(req.body.email);
+    if (user !== []) {
+      if (await bcrypt.compare(req.body.password, user[0].password)) {
+        //login user
+        res.status(200).send({
+          status: "success",
+          data: user[0],
+        });
+      }
+    } else {
+      res.status(404).send({
+        status: "failed",
+        message: "not found",
+      });
+    }
   } catch (error) {
     res.status(500).send({
       status: "failed",
