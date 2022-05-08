@@ -21,7 +21,7 @@ const app = express();
 //app.use(validateFirebaseIdToken);
 
 //User Routes
-app.post("/user/addUser/:userId", addUser);
+app.post("/user/addUser", addUser);
 
 app.post("/user/createUser", createAuthUser);
 app.get("/user/loginUser", loginUser);

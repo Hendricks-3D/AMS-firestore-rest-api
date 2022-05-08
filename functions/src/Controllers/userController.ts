@@ -15,12 +15,14 @@ const bcrypt = require("bcrypt");
  */
 const addUser = async (req: Request, res: Response) => {
   const user: User = req.body;
+  let emailCheckObject: User[] = [];
   try {
-    if (await getUserByEmail(user.email)) {
+    emailCheckObject = await getUserByEmail(user.email);
+    if (emailCheckObject.length >= 1) {
       //Check if email already exist
       res.status(409).send({
         status: "Data Conflict",
-        message: "Email already exist",
+        message: emailCheckObject,
       });
     } else {
       if (user) {
@@ -30,7 +32,7 @@ const addUser = async (req: Request, res: Response) => {
 
         const userCollection = db.collection("users").doc(); // connect to/create user collection in reference firestore
         userCollection.set(user); //add user object to document
-
+        user.id = userCollection.id;
         res.status(200).send({
           status: "success",
           message: "user was added successfully.",
@@ -92,7 +94,7 @@ const loginUser = async (req: Request, res: Response) => {
   let user: User[] = [];
   try {
     user = await getUserByEmail(req.body.email);
-    if (user !== []) {
+    if (user.length >= 1) {
       if (await bcrypt.compare(req.body.password, user[0].password)) {
         //login user
         res.status(200).send({
