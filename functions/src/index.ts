@@ -5,6 +5,7 @@ import { addClient } from "./Controllers/ClientController";
 //import { validateFirebaseIdToken } from "./Authentication/authMiddleware";
 import {
   addUser,
+  AuthenticateUser,
   createAuthUser,
   loginUser,
 } from "./Controllers/userController";
@@ -22,10 +23,13 @@ const app = express();
 //app.use(validateFirebaseIdToken);
 
 //User Routes
+//Custom authentication using Bcrypt to hash passwords
 app.post("/user/addUser", addUser);
-
-app.post("/user/createUser", createAuthUser);
 app.get("/user/loginUser", loginUser);
+
+//Firebase Authentication methods
+app.post("/user/createUser", createAuthUser);
+app.post("/user/AuthenticateUser", AuthenticateUser);
 
 ///----------------Client Routes
 

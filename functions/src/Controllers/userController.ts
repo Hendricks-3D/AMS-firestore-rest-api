@@ -116,4 +116,29 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export { addUser, createAuthUser, loginUser };
+const AuthenticateUser = async (req: Request, res: Response) => {
+  if (auth) {
+    auth
+      .getUserByEmail(req.body.email)
+      .then((data) => {
+        return res.status(200).send({
+          status: "Ok",
+          message: "login was successfully",
+          data: data,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send({
+          status: "failed",
+          message: error.message,
+        });
+      });
+  } else {
+    res.status(500).send({
+      status: "failed",
+      message: "Auth object undefined",
+    });
+  }
+};
+
+export { addUser, createAuthUser, loginUser, AuthenticateUser };
