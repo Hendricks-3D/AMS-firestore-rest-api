@@ -1,6 +1,7 @@
 //import bodyParser = require("body-parser");
 import * as express from "express";
 import * as functions from "firebase-functions";
+import { addClient } from "./Controllers/ClientController";
 //import { validateFirebaseIdToken } from "./Authentication/authMiddleware";
 import {
   addUser,
@@ -26,4 +27,7 @@ app.post("/user/addUser", addUser);
 app.post("/user/createUser", createAuthUser);
 app.get("/user/loginUser", loginUser);
 
+///----------------Client Routes
+
+app.post("/clients/addClient", addClient);
 exports.app = functions.https.onRequest(app);

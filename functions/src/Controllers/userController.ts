@@ -11,7 +11,7 @@ const bcrypt = require("bcrypt");
  *
  * @param req
  * @param res
- * This method will be used to add the client personal infomation to firebase
+ * This method will be used to add a user to firebase
  */
 const addUser = async (req: Request, res: Response) => {
   const user: User = req.body;
