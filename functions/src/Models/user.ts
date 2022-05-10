@@ -1,7 +1,7 @@
 class User {
   id? = "";
   username? = "";
-  password? = "";
+  password = "";
   email = "";
   emailVerified? = false;
 }

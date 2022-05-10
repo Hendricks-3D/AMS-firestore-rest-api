@@ -1,5 +1,6 @@
 import { Response } from "express";
-import { auth, db } from "../configuration/firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db, firebaseApp } from "../configuration/firebase";
 import { getUserByEmail } from "../functions/userMethods";
 import { Request, User } from "../Models/user";
 const bcrypt = require("bcrypt");
@@ -117,28 +118,21 @@ const loginUser = async (req: Request, res: Response) => {
 };
 
 const AuthenticateUser = async (req: Request, res: Response) => {
-  if (auth) {
-    auth
-      .getUserByEmail(req.body.email)
-      .then((data) => {
-        return res.status(200).send({
-          status: "Ok",
-          message: "login was successfully",
-          data: data,
-        });
-      })
-      .catch((error) => {
-        res.status(500).send({
-          status: "failed",
-          message: error.message,
-        });
+  const auth = getAuth(firebaseApp);
+  signInWithEmailAndPassword(auth, req.body.email, req.body.password)
+    .then((data) => {
+      return res.status(200).send({
+        status: "Ok",
+        message: "login was successfully",
+        data: data,
       });
-  } else {
-    res.status(500).send({
-      status: "failed",
-      message: "Auth object undefined",
+    })
+    .catch((error) => {
+      res.status(500).send({
+        status: "failed",
+        message: error.message,
+      });
     });
-  }
 };
 
 export { addUser, createAuthUser, loginUser, AuthenticateUser };

@@ -9,18 +9,15 @@ import {
   createAuthUser,
   loginUser,
 } from "./Controllers/userController";
+var cors = require("cors");
 
 const app = express();
+app.use(cors());
 
-// // create application/json parser
-// var jsonParser = bodyParser.json();
-
-// // create application/x-www-form-urlencoded parser
-// var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
-//This will apply the middleware to all request
-// (instead of doing this: app.post('/addUser',validateFirebaseIdToken,addUser);)
-//app.use(validateFirebaseIdToken);
+var corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 //User Routes
 //Custom authentication using Bcrypt to hash passwords
@@ -29,7 +26,7 @@ app.get("/user/loginUser", loginUser);
 
 //Firebase Authentication methods
 app.post("/user/createUser", createAuthUser);
-app.post("/user/AuthenticateUser", AuthenticateUser);
+app.post("/user/AuthenticateUser", cors(corsOptions), AuthenticateUser);
 
 ///----------------Client Routes
 
