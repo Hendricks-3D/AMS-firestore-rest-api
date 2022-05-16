@@ -30,5 +30,5 @@ app.post("/user/AuthenticateUser", cors(corsOptions), AuthenticateUser);
 
 ///----------------Client Routes
 
-app.post("/clients/addClient", addClient);
+app.post("/client/addClient", cors(corsOptions), addClient);
 exports.app = functions.https.onRequest(app);
